@@ -1,0 +1,48 @@
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened, closed ]
+  push:
+    branches: ['main']
+
+name: 'CI/CD'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cache-deps:
+    name: Install/Cache Dependencies
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        uses: chill-viking/workflows/actions/npm-ci@main
+        with:
+          working-directory: ./ui-src/
+
+  nx-affected:
+    uses: chill-viking/workflows/.github/workflows/nx-test-affected.yml@main
+    name: Nx Affected
+    if: github.event.action != 'closed'
+    needs: cache-deps
+    with:
+      working-directory: ./ui-src/
+
+  deploy:
+    uses: chill-viking/workflows/.github/workflows/swa-deploy.yml@main
+    name: SWA
+    needs: cache-deps
+    if: >
+      always()
+      && github.event_name != 'merge_group'
+    with:
+      working_directory: ./ui-src/
+      app_location: ui-src
+      output_location: dist/apps/basic-crud
+    secrets:
+      swa_token: ${{ secrets.AZURE_STATIC_WEB_APPS_TOKEN }}
+      git_token: ${{ secrets.GITHUB_TOKEN }}
