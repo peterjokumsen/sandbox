@@ -1,0 +1,36 @@
+---
+# Azure Static Web Apps
+# Build and deploy Static Web Apps to Azure.
+
+parameters:
+- name: app_location
+  type: string
+  default: 'ui-src'
+- name: api_location
+  type: string
+  default: ''
+  # default: 'api-src'
+- name: output_location
+  type: string
+
+stages:
+- stage: swa_deploy
+  displayName: 'Deploy to Azure Static Web Apps'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - job: swa_deploy
+    displayName: 'Deploy to Azure Static Web Apps'
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - checkout: self
+      submodules: true
+
+    - template: ../steps/npm-cache.yml
+
+    - task: AzureStaticWebApp@0
+      inputs:
+        app_location: ${{ parameters.app_location }} # App source code path relative to cwd
+        api_location: ${{ parameters.api_location }} # Api source code path relative to cwd
+        output_location: ${{ parameters.output_location }} # Built app content directory relative to app_location - optional
+        azure_static_web_apps_api_token: $(deployment_token)

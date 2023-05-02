@@ -1,0 +1,16 @@
+trigger:
+  - main
+
+variables:
+  - group: basic-crud
+  - template: ./variables/global.yml
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - template: ./templates/stages/nx-affected.yml
+
+  - template: ./templates/stages/swa-deploy.yml
+    parameters:
+      output_location: "dist/apps/basic-crud"

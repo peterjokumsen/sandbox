@@ -1,0 +1,9 @@
+steps:
+  # Restore cache.
+  - task: Cache@2
+    inputs:
+      key: 'npm | "$(Agent.OS)" | ui-src/package-lock.json'
+      restoreKeys: |
+        npm | "$(Agent.OS)"
+      path: $(nodeModulesCache)
+    displayName: Cache Node modules
