@@ -1,6 +1,11 @@
 <header class="navbar">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Chill Viking 🛝 | {{ title$ | async }}</a>
+    <a class="navbar-brand" href="/">
+      Peter Jokumsen 🛝
+      <span *ngIf="title$ | async; let title">
+        | {{ title }}
+      </span>
+    </a>
   </div>
 </header>
 <nav class="nav nav-pills nav-fill">
