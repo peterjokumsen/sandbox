@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "affected:all-targets": "nx affected -t lint test build --base=origin/main",
     "build": "nx build basic-crud",
     "test": "nx test basic-crud",
-    "serve": "nx serve basic-crud"
+    "serve": "nx serve basic-crud",
+    "format": "nx format:write --base=origin/main"
   },
   "private": true,
   "dependencies": {

@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="basic-crud:serve" type="NxRunConfigurationType" nameIsGenerated="true">
+    <option name="nx-projects" value="basic-crud" />
+    <option name="nx-targets" value="serve" />
+    <envs />
+    <option name="arguments" value="" />
+    <method v="2" />
+  </configuration>
+</component>
