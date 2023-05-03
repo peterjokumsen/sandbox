@@ -1,10 +1,10 @@
 import { NgModule, Provider } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoggerService } from './logger.service';
-import { ProductionLoggerService } from './production-logger.service';
 
 const testLogger: LoggerService = {
-  log: (..._: unknown[]): void => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  log: (...args: unknown[]): void => {
     // ignored
   },
 };
