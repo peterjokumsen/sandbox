@@ -17,7 +17,8 @@
         "tsConfig": "apps/basic-crud/tsconfig.app.json",
         "assets": [
           "apps/basic-crud/src/favicon.ico",
-          "apps/basic-crud/src/assets"
+          "apps/basic-crud/src/assets",
+          "apps/basic-crud/src/staticwebapp.config.json"
         ],
         "styles": ["apps/basic-crud/src/styles.scss"],
         "scripts": []
