@@ -1,1 +1,21 @@
-<router-outlet></router-outlet>
+<header class="navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Chill Viking 🛝 | {{ title$ | async }}</a>
+  </div>
+</header>
+<nav class="nav nav-pills nav-fill">
+  <ng-container *ngFor="let route of routes">
+    <a
+      [routerLink]="route.path"
+      routerLinkActive="active"
+      class="nav-link mx-2"
+    >
+      {{ route.title }}
+    </a>
+  </ng-container>
+</nav>
+
+
+<div class="container-fluid">
+  <router-outlet></router-outlet>
+</div>
