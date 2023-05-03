@@ -2,7 +2,7 @@ on:
   pull_request:
     types: [ opened, synchronize, reopened, closed ]
   push:
-    branches: ['main']
+    branches: ['main', 'develop']
 
 name: 'CI/CD'
 
