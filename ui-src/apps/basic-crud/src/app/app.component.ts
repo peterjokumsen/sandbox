@@ -6,9 +6,9 @@ import { PageTitleService } from './services';
 @Component({
   standalone: true,
   imports: [RouterModule, CommonModule],
-  selector: "sandbox-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"],
+  selector: 'sandbox-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   private _router = inject(Router);
@@ -16,9 +16,11 @@ export class AppComponent implements OnInit {
 
   title$ = this._titleService.title$;
 
-  routes: Array<{ path: string; title: string; }> = [];
+  routes: Array<{ path: string; title: string }> = [];
 
-  private isProperPage(route: Route): route is Route & { data: { title: string; }; } {
+  private isProperPage(
+    route: Route,
+  ): route is Route & { data: { title: string } } {
     return route.path !== '**' && !!route.data && !!route.data['title'];
   }
 

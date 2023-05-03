@@ -1,5 +1,9 @@
 import { inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, TitleStrategy } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  TitleStrategy,
+} from '@angular/router';
 import { BehaviorSubject, tap } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { LoggerService } from '@sandbox/logging';
@@ -12,9 +16,11 @@ export class PageTitleService extends TitleStrategy {
   private _logger = inject(LoggerService);
   private _currentTitleSubject = new BehaviorSubject('');
 
-  title$ = this._currentTitleSubject.asObservable().pipe(
-    tap((title) => this._logger.log('PageTitleService.title$', { title })),
-  );
+  title$ = this._currentTitleSubject
+    .asObservable()
+    .pipe(
+      tap((title) => this._logger.log('PageTitleService.title$', { title })),
+    );
 
   private getTitle(root: ActivatedRouteSnapshot): string {
     if (root.data && root.data['title']) return root.data['title'];

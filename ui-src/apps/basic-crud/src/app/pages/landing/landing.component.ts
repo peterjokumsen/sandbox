@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormFactoryModule, QuestionDefinition } from '@sandbox/form-factory';
@@ -9,11 +9,11 @@ import { FormFactoryModule, QuestionDefinition } from '@sandbox/form-factory';
 @Component({
   selector: 'sandbox-landing',
   standalone: true,
-  imports: [ CommonModule, FormFactoryModule ],
+  imports: [CommonModule, FormFactoryModule],
   templateUrl: './landing.component.html',
-  styleUrls: [ './landing.component.scss' ],
+  styleUrls: ['./landing.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent {
   definition: QuestionDefinition = {
