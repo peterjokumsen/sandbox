@@ -2,7 +2,7 @@
   "name": "form-factory",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/form-factory/src",
-  "prefix": "sandbox",
+  "prefix": "ff",
   "tags": [],
   "projectType": "library",
   "targets": {
