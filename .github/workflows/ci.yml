@@ -42,6 +42,7 @@ jobs:
     with:
       working_directory: ./ui-src/
       app_location: ui-src
+      api_location: api-src/BasicCrud.Functions
       output_location: dist/apps/basic-crud
     secrets:
       swa_token: ${{ secrets.AZURE_STATIC_WEB_APPS_TOKEN }}
