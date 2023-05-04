@@ -10,6 +10,14 @@ export const appRoutes: Route[] = [
       ),
   },
   {
+    path: 'entities',
+    data: { title: 'Entities' },
+    loadComponent: () =>
+      import('./pages/entities/entities.component').then(
+        (m) => m.EntitiesComponent,
+      ),
+  },
+  {
     path: '',
     pathMatch: 'full',
     redirectTo: 'home',

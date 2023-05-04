@@ -1,0 +1,19 @@
+.btn {
+  width: 100%;
+}
+
+.api-call {
+  .main {
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    min-height: 150px;
+    padding: 10px;
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+}
