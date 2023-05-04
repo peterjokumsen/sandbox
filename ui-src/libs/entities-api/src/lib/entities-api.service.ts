@@ -8,11 +8,11 @@ export class EntitiesApiService {
   private _logger = inject(LoggerService);
   private _http = inject(HttpClient);
 
-  getAll(queryParams?: { params: HttpParams }) {
-    this._logger.log('Getting all entities', { queryParams });
-    return this._http.get('/api/entities', queryParams).pipe(
+  getAll(params?: Record<string, string | number | boolean>) {
+    this._logger.log('Getting all entities', { params });
+    return this._http.get('/api/entities', { params }).pipe(
       tap((entities) => {
-        this._logger.log('Got all entities', { entities, queryParams });
+        this._logger.log('Got all entities', { entities, params });
       }),
     );
   }
