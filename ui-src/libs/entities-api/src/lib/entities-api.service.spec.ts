@@ -19,6 +19,7 @@ describe('EntitiesApiService', () => {
     TestBed.configureTestingModule({
       imports: [TestLoggingModule],
       providers: [
+        EntitiesApiService,
         { provide: HttpClient, useValue: httpClientSpy },
       ],
     });

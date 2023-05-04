@@ -17,7 +17,8 @@
     "paths": {
       "@sandbox/entities-api": ["libs/entities-api/src/index.ts"],
       "@sandbox/form-factory": ["libs/form-factory/src/index.ts"],
-      "@sandbox/logging": ["libs/logging/src/index.ts"]
+      "@sandbox/logging": ["libs/logging/src/index.ts"],
+      "@sandbox/testing": ["libs/testing/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
