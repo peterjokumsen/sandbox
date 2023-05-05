@@ -16,9 +16,14 @@ export class EntitiesComponent {
   private _logger = inject(LoggerService);
   private _getStateSubject = new BehaviorSubject<'wait' | 'loading' | 'done'>('wait');
   private _getSubject = new BehaviorSubject<unknown>(null);
+  private _postStateSubject = new BehaviorSubject<'wait' | 'loading' | 'done'>('wait');
+  private _postSubject = new BehaviorSubject<unknown>(null);
 
   getState$ = this._getStateSubject.asObservable();
   get$ = this._getSubject.asObservable();
+
+  postState$ = this._postStateSubject.asObservable();
+  post$ = this._postSubject.asObservable();
 
   get() {
     this._getStateSubject.next('loading');
@@ -32,6 +37,21 @@ export class EntitiesComponent {
     ).subscribe((response) => {
       this._getSubject.next(response);
       this._getStateSubject.next('done');
+    });
+  }
+
+  post() {
+    this._postStateSubject.next('loading');
+    this._postSubject.next(null);
+    this._api.createEntity({ value: 'hello' }).pipe(
+      first(),
+      catchError((error) => {
+        this._logger.log('Failed to post entity', { error });
+        return of({ message: 'Failed to post value', error });
+      }),
+    ).subscribe((response) => {
+      this._postSubject.next(response);
+      this._postStateSubject.next('done');
     });
   }
 }
