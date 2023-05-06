@@ -12,7 +12,7 @@ public static class CreateOrGetEntities
 {
     [FunctionName("CreateOrGetEntities")]
     public static async Task<IActionResult> RunAsync(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "entities")] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "entities")] HttpRequest req,
         ILogger log)
     {
         log.LogInformation("C# HTTP trigger function processed a request.");
