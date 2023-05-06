@@ -6,6 +6,11 @@
                 "isEnabled": true,
                 "excludedTypes": "Request"
             }
+        },
+        "logLevel": {
+            "default": "Warning",
+            "Microsoft": "Error",
+            "Microsoft.Hosting.Lifetime": "Error"
         }
     }
 }

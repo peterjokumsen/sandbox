@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BasicCrud.Functions.Models;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 
@@ -9,7 +11,7 @@ namespace BasicCrud.Functions.Repositories;
 public interface IEntityRepo
 {
     Task<IEnumerable<object>> GetEntities(CancellationToken cancellationToken);
-    Task<ItemResponse<object>> CreateEntity(object value, CancellationToken cancellationToken);
+    Task<ItemResponse<Entity>> CreateEntity(Entity value, CancellationToken cancellationToken);
 }
 
 public class EntityRepo : IEntityRepo
@@ -27,7 +29,7 @@ public class EntityRepo : IEntityRepo
     {
         _logger.LogInformation("Getting entities");
         var container = _repoClient.Client.GetContainer(Constants.DatabaseId, Constants.EntityContainerId);
-        var query = container.GetItemQueryIterator<object>("SELECT * FROM c");
+        var query = container.GetItemQueryIterator<Entity>("SELECT * FROM c");
         var results = new List<object>();
         while (query.HasMoreResults)
         {
@@ -39,12 +41,20 @@ public class EntityRepo : IEntityRepo
         return results;
     }
 
-    public async Task<ItemResponse<object>> CreateEntity(object value, CancellationToken cancellationToken)
+    public async Task<ItemResponse<Entity>> CreateEntity(Entity value, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Creating entity, value: {Value}", value);
         var container = _repoClient.Client.GetContainer(Constants.DatabaseId, Constants.EntityContainerId);
-        var response = await container.CreateItemAsync(value, cancellationToken: cancellationToken);
-        _logger.LogInformation("Created entity, response: {Response}", response);
-        return response;
+        try
+        {
+            var response = await container.CreateItemAsync(value, cancellationToken: cancellationToken);
+            _logger.LogInformation("Created entity, response: {Response}", response);
+            return response;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error creating entity, value: {Value}", value);
+            throw;
+        }
     }
 }

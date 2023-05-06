@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BasicCrud.Functions.Models;
 using BasicCrud.Functions.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ public class CreateOrGetEntities
         [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "entities")] HttpRequest req,
         CancellationToken cancellationToken = default)
     {
-        _log.LogInformation("C# HTTP trigger function processed a request.");
+        _log.LogInformation("C# HTTP trigger function processed a request");
 
         var requestBody = await req.ReadAsStringAsync();
         _log.LogInformation("Query: [{QueryString}], Method: [{RequestMethod}], Body: [{RequestBody}]",
@@ -45,7 +46,20 @@ public class CreateOrGetEntities
                 });
         }
 
-        var createdResult = await _entityRepo.CreateEntity(requestBody, cancellationToken);
+        Entity jsonBody;
+        try
+        {
+            jsonBody = new Entity
+            {
+                Value = System.Text.Json.JsonSerializer.Deserialize<object>(requestBody),
+            };
+        }
+        catch (Exception e)
+        {
+            _log.LogError(e, "Error deserializing request body");
+            return new BadRequestObjectResult(new { Message = "Error deserializing request body", Data = requestBody });
+        }
+        var createdResult = await _entityRepo.CreateEntity(jsonBody, cancellationToken);
         return new CreatedResult("entities", new { Message = "Created entity", Data = createdResult });
     }
 }

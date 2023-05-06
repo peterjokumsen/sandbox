@@ -1,5 +1,6 @@
 ﻿using BasicCrud.Functions.Options;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -29,11 +30,9 @@ public class RepoClient : IRepoClient
         _logger = logger;
         _logger.LogInformation("RepoClient constructor called");
 
-        var clientOptions = new CosmosClientOptions
-        {
-            ApplicationRegion = Constants.Region
-        };
+        var builder = new CosmosClientBuilder(options.Value.AccountEndpoint, options.Value.AccountKey)
+            .WithApplicationRegion(Constants.Region);
 
-        _client = new CosmosClient(options.Value.AccountEndpoint, options.Value.AccountKey, clientOptions);
+        _client = builder.Build();
     }
 }
