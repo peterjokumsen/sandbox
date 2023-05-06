@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using BasicCrud.Functions.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -8,23 +10,42 @@ using Microsoft.Extensions.Logging;
 
 namespace BasicCrud.Functions;
 
-public static class CreateOrGetEntities
+public class CreateOrGetEntities
 {
-    [FunctionName("CreateOrGetEntities")]
-    public static async Task<IActionResult> RunAsync(
-        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "entities")] HttpRequest req,
-        ILogger log)
+    private readonly IEntityRepo _entityRepo;
+    private readonly ILogger<CreateOrGetEntities> _log;
+
+    public CreateOrGetEntities(IEntityRepo entityRepo, ILogger<CreateOrGetEntities> log)
     {
-        log.LogInformation("C# HTTP trigger function processed a request.");
+        _entityRepo = entityRepo;
+        _log = log;
+    }
+
+    [FunctionName("CreateOrGetEntities")]
+    public async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "entities")] HttpRequest req,
+        CancellationToken cancellationToken = default)
+    {
+        _log.LogInformation("C# HTTP trigger function processed a request.");
 
         var requestBody = await req.ReadAsStringAsync();
-        log.LogInformation("Query: [{QueryString}], Method: [{RequestMethod}], Body: [{RequestBody}]",
+        _log.LogInformation("Query: [{QueryString}], Method: [{RequestMethod}], Body: [{RequestBody}]",
             req.Query,
             req.Method,
             requestBody);
 
-        return req.Method.Equals("get", StringComparison.OrdinalIgnoreCase)
-            ? new OkObjectResult(new { Message = "get all entities, to be implemented" })
-            : new CreatedResult("entities", new { Message = "create entity, to be implemented" });
+        if (req.Method.Equals("get", StringComparison.OrdinalIgnoreCase))
+        {
+            var result = await _entityRepo.GetEntities(cancellationToken);
+            return new OkObjectResult(
+                new
+                {
+                    Message = "Returning entities",
+                    Data = result,
+                });
+        }
+
+        var createdResult = await _entityRepo.CreateEntity(requestBody, cancellationToken);
+        return new CreatedResult("entities", new { Message = "Created entity", Data = createdResult });
     }
 }
