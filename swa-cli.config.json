@@ -3,9 +3,9 @@
   "configurations": {
     "sandbox": {
       "appLocation": "ui-src\\dist\\apps\\basic-crud",
-      "apiLocation": "api-src\\BasicCrud.Functions",
+      "apiLocation": "api-ts",
       "outputLocation": ".",
-      "apiBuildCommand": "dotnet publish -c Release"
+      "apiBuildCommand": "npm run build"
     }
   }
 }
