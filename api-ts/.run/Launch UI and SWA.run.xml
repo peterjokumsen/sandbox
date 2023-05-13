@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Launch UI and SWA" type="CompoundRunConfigurationType">
+    <toRun name="start ui" type="js.build_tools.npm" />
+    <toRun name="start swa" type="ShConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
