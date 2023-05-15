@@ -32,4 +32,14 @@ export class EntitiesApiService {
 
     return { resource, statusCode, substatus };
   }
+
+  async deleteEntity(id: string) {
+    const { resource, statusCode } = await this._client
+      .database(this._databaseId)
+      .container(this._containerId)
+      .item(id)
+      .delete();
+
+    return { resource, statusCode };
+  }
 }
