@@ -1,0 +1,12 @@
+<ng-container>
+  <div class="button-container">
+    <button
+      *ngFor="let item of items"
+      type="button"
+      class="btn btn-outline-{{buttonType}}"
+      (click)="itemClick.emit(item)"
+    >
+      {{ transformLabel(item) }}
+    </button>
+  </div>
+</ng-container>
