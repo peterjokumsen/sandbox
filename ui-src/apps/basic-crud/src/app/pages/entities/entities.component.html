@@ -45,3 +45,25 @@
     ></ng-container>
   </div>
 </div>
+
+<div class="row api-call">
+  <div class="header col-12">
+    <h2>DELETE</h2>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-3 side">
+      <!-- Add form to create body for post -->
+      <button type="button" class="btn btn-primary mb-3" (click)="get()">Get Elements To Delete</button>
+      <ng-container *ngIf="hasElements$ | async">
+        <pj-ui-button-list
+          [items]="elementsToDelete$ | async"
+          (itemClick)="delete($event)"
+        ></pj-ui-button-list>
+      </ng-container>
+    </div>
+    <ng-container
+      [ngTemplateOutlet]="apiCall"
+      [ngTemplateOutletContext]="{ $implicit: deleteState$, response$: delete$ }"
+    ></ng-container>
+  </div>
+</div>

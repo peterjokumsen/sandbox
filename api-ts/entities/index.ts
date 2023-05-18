@@ -6,18 +6,27 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   const api = new EntitiesApiService();
 
   let response;
-  if (req.method === "GET") {
-    response = await api.getEntities();
-  } else {
-    if (req.body) {
-      response = await api.createEntity(req.body);
-    } else {
+  if (req.method === 'GET') {
+    const { resources } = await api.getEntities();
+    response = { resources };
+  } else if (req.method === 'POST' && req.body) {
+    response = await api.createEntity(req.body);
+  } else if (req.method === 'DELETE') {
+    if (!req.query.id) {
       context.res = {
         status: 400,
-        body: "Please pass an entity in the request body",
+        body: 'Please pass an id on the query string',
       };
       return;
     }
+
+    response = await api.deleteEntity(req.query.id);
+  } else {
+    context.res = {
+      status: 405,
+      body: 'Please pass a valid method',
+    };
+    return;
   }
 
   context.res = {

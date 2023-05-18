@@ -1,0 +1,16 @@
+<ng-container *ngIf="items else empty">
+  <div class="button-container">
+    <button
+      *ngFor="let item of items"
+      type="button"
+      class="btn btn-outline-{{buttonType}}"
+      (click)="itemClick.emit(item)"
+    >
+      {{ transformLabel(item) }}
+    </button>
+  </div>
+</ng-container>
+
+<ng-template #empty>
+  <p>No items available.</p>
+</ng-template>
