@@ -7,7 +7,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
 
   let response;
   if (req.method === 'GET') {
-    response = await api.getEntities();
+    const { resources } = await api.getEntities();
+    response = { resources };
   } else if (req.method === 'POST' && req.body) {
     response = await api.createEntity(req.body);
   } else if (req.method === 'DELETE') {
