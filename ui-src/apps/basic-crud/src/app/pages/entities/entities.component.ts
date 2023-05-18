@@ -32,10 +32,10 @@ export class EntitiesComponent {
 
   deleteState$ = this._deleteStateSubject.asObservable();
   hasElements$ = this.getState$.pipe(map((state) => state === 'done'));
-  elementsToDelete$: Observable<unknown[]> = this._getSubject.asObservable().pipe(
+  elementsToDelete$: Observable<string[]> = this._getSubject.asObservable().pipe(
     map((response) => {
-      if (this.isType<{ resources: unknown[] }>(response, 'resources')) {
-        return response.resources;
+      if (this.isType<{ resources: Array<object & { id: string }> }>(response, 'resources')) {
+        return response.resources.map(({ id }) => id);
       }
 
       return [];
@@ -77,15 +77,16 @@ export class EntitiesComponent {
     });
   }
 
-  delete(element?: unknown) {
-    if (!this.isType<{ id: string }>(element, 'id')) {
-      this._logger.log('Failed to delete entity', { error: 'Please pass an id on the query string' });
+  delete(elementId?: string) {
+    if (!elementId) {
+      this._deleteStateSubject.next('done');
+      this._deleteSubject.next({ message: 'No element to delete received' });
       return;
     }
 
     this._deleteStateSubject.next('loading');
 
-    this._api.deleteEntity(element.id).pipe(
+    this._api.deleteEntity(elementId).pipe(
       first(),
       catchError((error) => {
         this._logger.log('Failed to delete entity', { error });
