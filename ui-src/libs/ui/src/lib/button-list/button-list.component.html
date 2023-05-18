@@ -1,4 +1,4 @@
-<ng-container>
+<ng-container *ngIf="items else empty">
   <div class="button-container">
     <button
       *ngFor="let item of items"
@@ -10,3 +10,7 @@
     </button>
   </div>
 </ng-container>
+
+<ng-template #empty>
+  <p>No items available.</p>
+</ng-template>
