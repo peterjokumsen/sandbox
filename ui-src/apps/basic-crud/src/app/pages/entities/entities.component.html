@@ -1,8 +1,6 @@
 <ng-template #apiCall let-state$ let-response$="response$">
   <div class="col-8 main" [ngSwitch]="state$ | async">
-    <p *ngSwitchCase="'wait'">
-      Click button to call API.
-    </p>
+    <p *ngSwitchCase="'wait'">Click button to call API.</p>
     <div *ngSwitchCase="'loading'" class="justify-content-center loading">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -15,55 +13,66 @@
   </div>
 </ng-template>
 
-<div class="row api-call">
-  <div class="header col-12">
-    <h2>GET</h2>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-3 side">
-      <button type="button" class="btn btn-primary" (click)="get()">Call API</button>
+<accordion [isAnimated]="true">
+  <accordion-group heading="GET">
+    <div class="row api-call">
+      <div class="row justify-content-center">
+        <div class="col-3 side">
+          <button type="button" class="btn btn-primary" (click)="get()">
+            Call API
+          </button>
+        </div>
+        <ng-container
+          [ngTemplateOutlet]="apiCall"
+          [ngTemplateOutletContext]="{ $implicit: getState$, response$: get$ }"
+        ></ng-container>
+      </div>
     </div>
-    <ng-container
-      [ngTemplateOutlet]="apiCall"
-      [ngTemplateOutletContext]="{ $implicit: getState$, response$: get$ }"
-    ></ng-container>
-  </div>
-</div>
+  </accordion-group>
 
-<div class="row api-call">
-  <div class="header col-12">
-    <h2>POST</h2>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-3 side">
-      <!-- Add form to create body for post -->
-      <button type="button" class="btn btn-primary" (click)="post()">Call API</button>
+  <accordion-group heading="POST">
+    <div class="row api-call">
+      <div class="row justify-content-center">
+        <div class="col-3 side">
+          <!-- Add form to create body for post -->
+          <button type="button" class="btn btn-primary" (click)="post()">
+            Call API
+          </button>
+        </div>
+        <ng-container
+          [ngTemplateOutlet]="apiCall"
+          [ngTemplateOutletContext]="{
+            $implicit: postState$,
+            response$: post$
+          }"
+        ></ng-container>
+      </div>
     </div>
-    <ng-container
-      [ngTemplateOutlet]="apiCall"
-      [ngTemplateOutletContext]="{ $implicit: postState$, response$: post$ }"
-    ></ng-container>
-  </div>
-</div>
+  </accordion-group>
 
-<div class="row api-call">
-  <div class="header col-12">
-    <h2>DELETE</h2>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-3 side">
-      <!-- Add form to create body for post -->
-      <button type="button" class="btn btn-primary mb-3" (click)="get()">Get Elements To Delete</button>
-      <ng-container *ngIf="hasElements$ | async">
-        <pj-ui-button-list
-          [items]="elementsToDelete$ | async"
-          (itemClick)="delete($event)"
-        ></pj-ui-button-list>
-      </ng-container>
+  <accordion-group heading="DELETE">
+    <div class="row api-call">
+      <div class="row justify-content-center">
+        <div class="col-3 side">
+          <!-- Add form to create body for post -->
+          <button type="button" class="btn btn-primary mb-3" (click)="get()">
+            Get Elements To Delete
+          </button>
+          <ng-container *ngIf="hasElements$ | async">
+            <pj-ui-button-list
+              [items]="elementsToDelete$ | async"
+              (itemClick)="delete($event)"
+            ></pj-ui-button-list>
+          </ng-container>
+        </div>
+        <ng-container
+          [ngTemplateOutlet]="apiCall"
+          [ngTemplateOutletContext]="{
+            $implicit: deleteState$,
+            response$: delete$
+          }"
+        ></ng-container>
+      </div>
     </div>
-    <ng-container
-      [ngTemplateOutlet]="apiCall"
-      [ngTemplateOutletContext]="{ $implicit: deleteState$, response$: delete$ }"
-    ></ng-container>
-  </div>
-</div>
+  </accordion-group>
+</accordion>

@@ -1,16 +1,17 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EntitiesApiService } from "@sandbox/entities-api";
+import { EntitiesApiService } from '@sandbox/entities-api';
 import { BehaviorSubject, catchError, first, map, Observable, of } from 'rxjs';
-import { LoggerService } from "@sandbox/logging";
+import { LoggerService } from '@sandbox/logging';
 import { ButtonListComponent } from '@pj-sandbox/ui';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 type State = 'wait' | 'loading' | 'done';
 
 @Component({
   selector: 'sandbox-entities',
   standalone: true,
-  imports: [ CommonModule, ButtonListComponent ],
+  imports: [CommonModule, ButtonListComponent, AccordionModule],
   templateUrl: './entities.component.html',
   styleUrls: ['./entities.component.scss'],
 })
@@ -32,15 +33,22 @@ export class EntitiesComponent {
 
   deleteState$ = this._deleteStateSubject.asObservable();
   hasElements$ = this.getState$.pipe(map((state) => state === 'done'));
-  elementsToDelete$: Observable<string[]> = this._getSubject.asObservable().pipe(
-    map((response) => {
-      if (this.isType<{ resources: Array<object & { id: string }> }>(response, 'resources')) {
-        return response.resources.map(({ id }) => id);
-      }
+  elementsToDelete$: Observable<string[]> = this._getSubject
+    .asObservable()
+    .pipe(
+      map((response) => {
+        if (
+          this.isType<{ resources: Array<object & { id: string }> }>(
+            response,
+            'resources',
+          )
+        ) {
+          return response.resources.map(({ id }) => id);
+        }
 
-      return [];
-    }),
-  );
+        return [];
+      }),
+    );
   delete$ = this._deleteSubject.asObservable();
 
   private isType<T>(obj: unknown, prop: keyof T): obj is T {
@@ -50,31 +58,37 @@ export class EntitiesComponent {
   get() {
     this._getStateSubject.next('loading');
     this._getSubject.next(null);
-    this._api.getAll({ value: 'hello' }).pipe(
-      first(),
-      catchError((error) => {
-        this._logger.log('Failed to get entities', { error });
-        return of({ message: 'Failed to get value', error });
-      }),
-    ).subscribe((response) => {
-      this._getSubject.next(response);
-      this._getStateSubject.next('done');
-    });
+    this._api
+      .getAll({ value: 'hello' })
+      .pipe(
+        first(),
+        catchError((error) => {
+          this._logger.log('Failed to get entities', { error });
+          return of({ message: 'Failed to get value', error });
+        }),
+      )
+      .subscribe((response) => {
+        this._getSubject.next(response);
+        this._getStateSubject.next('done');
+      });
   }
 
   post() {
     this._postStateSubject.next('loading');
     this._postSubject.next(null);
-    this._api.createEntity({ value: 'hello' }).pipe(
-      first(),
-      catchError((error) => {
-        this._logger.log('Failed to post entity', { error });
-        return of({ message: 'Failed to post value', error });
-      }),
-    ).subscribe((response) => {
-      this._postSubject.next(response);
-      this._postStateSubject.next('done');
-    });
+    this._api
+      .createEntity({ value: 'hello' })
+      .pipe(
+        first(),
+        catchError((error) => {
+          this._logger.log('Failed to post entity', { error });
+          return of({ message: 'Failed to post value', error });
+        }),
+      )
+      .subscribe((response) => {
+        this._postSubject.next(response);
+        this._postStateSubject.next('done');
+      });
   }
 
   delete(elementId?: string) {
@@ -86,16 +100,19 @@ export class EntitiesComponent {
 
     this._deleteStateSubject.next('loading');
 
-    this._api.deleteEntity(elementId).pipe(
-      first(),
-      catchError((error) => {
-        this._logger.log('Failed to delete entity', { error });
-        return of({ message: 'Failed to delete value', error });
-      }),
-    ).subscribe((response) => {
-      this._deleteSubject.next(response);
-      this._deleteStateSubject.next('done');
-      this.get();
-    });
+    this._api
+      .deleteEntity(elementId)
+      .pipe(
+        first(),
+        catchError((error) => {
+          this._logger.log('Failed to delete entity', { error });
+          return of({ message: 'Failed to delete value', error });
+        }),
+      )
+      .subscribe((response) => {
+        this._deleteSubject.next(response);
+        this._deleteStateSubject.next('done');
+        this.get();
+      });
   }
 }
