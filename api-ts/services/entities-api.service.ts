@@ -1,5 +1,5 @@
-import {CosmosClient} from '@azure/cosmos';
-import {CosmosDbClientService} from './cosmos-db-client.service';
+import { CosmosClient } from '@azure/cosmos';
+import { CosmosDbClientService } from './cosmos-db-client.service';
 
 export class EntitiesApiService {
   private readonly _databaseId = 'Basic';
@@ -12,13 +12,18 @@ export class EntitiesApiService {
   }
 
   async getEntities() {
-    const result = await this._client
+    return await this._client
       .database(this._databaseId)
       .container(this._containerId)
       .items.readAll()
       .fetchAll();
+  }
 
-    return result;
+  getEntityItem(id: string) {
+    return this._client
+      .database(this._databaseId)
+      .container(this._containerId)
+      .item(id, id);
   }
 
   async createEntity(entity: any) {
@@ -36,16 +41,12 @@ export class EntitiesApiService {
   }
 
   async deleteEntity(id: string) {
-    const item = await this._client
-      .database(this._databaseId)
-      .container(this._containerId)
-      .item(id, id);
+    const item = this.getEntityItem(id);
 
     try {
       const value = await item.delete();
       return { statusCode: value.statusCode };
-    }
-    catch (e) {
+    } catch (e) {
       return { statusCode: e.statusCode };
     }
   }
