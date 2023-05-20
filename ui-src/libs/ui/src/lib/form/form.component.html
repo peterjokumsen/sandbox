@@ -1,6 +1,13 @@
-<ng-container *ngIf="formGroup">
+<ng-template #noSchema>
+  <h3>No schema provided</h3>
+  <p>Unable to render a form without a schema to describe it.</p>
+</ng-template>
+
+<ng-container *ngIf="formGroup; else noSchema">
   <form [formGroup]="formGroup">
-    <ng-container *ngTemplateOutlet="groupTemplate; context: { key: '' }"></ng-container>
+    <ng-container
+      *ngTemplateOutlet="groupTemplate; context: { key: '' }"
+    ></ng-container>
   </form>
 </ng-container>
 
@@ -9,14 +16,20 @@
   <h5 *ngIf="getDescription(key); let description">{{ description }}</h5>
   <ng-container *ngFor="let newKey of getGroupControls(key)">
     <ng-container *ngIf="isGroup(newKey)">
-      <ng-container *ngTemplateOutlet="groupTemplate; context: { key: newKey }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="groupTemplate; context: { key: newKey }"
+      ></ng-container>
     </ng-container>
     <ng-container *ngIf="isArray(newKey)">
-      <ng-container *ngTemplateOutlet="arrayTemplate; context: { key: newKey }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="arrayTemplate; context: { key: newKey }"
+      ></ng-container>
     </ng-container>
     <div class="row">
       <ng-container *ngIf="isControl(newKey)">
-        <ng-container *ngTemplateOutlet="controlTemplate; context: { key: newKey }"></ng-container>
+        <ng-container
+          *ngTemplateOutlet="controlTemplate; context: { key: newKey }"
+        ></ng-container>
       </ng-container>
     </div>
   </ng-container>
@@ -28,7 +41,10 @@
     <button type="button" (click)="addItem(key)">Add</button>
     <p *ngIf="getDescription(key); let description">{{ description }}</p>
     <div *ngFor="let item of getArrayControl(key).controls; let i = index">
-      <input [formControlName]="i" placeholder="{{ getLabel(key) }} {{ i + 1 }}">
+      <input
+        [formControlName]="i"
+        placeholder="{{ getLabel(key) }} {{ i + 1 }}"
+      />
     </div>
   </div>
 </ng-template>
@@ -36,7 +52,7 @@
 <ng-template #controlTemplate let-key="key">
   <div class="form-control">
     <label>{{ getLabel(key) }}</label>
-    <input [formControlName]="key">
+    <input [formControlName]="key" />
     <p *ngIf="getDescription(key); let description">{{ description }}</p>
   </div>
 </ng-template>

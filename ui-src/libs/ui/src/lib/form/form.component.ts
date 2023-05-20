@@ -1,14 +1,26 @@
 import {
   ChangeDetectionStrategy,
-  Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
   ViewEncapsulation,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import {
   ExtractType,
   FormSchema,
-  FormSchemaArrayProperty, FormSchemaBaseProperty,
+  FormSchemaArrayProperty,
+  FormSchemaBaseProperty,
   FormSchemaObjectProperty,
   FormSchemaProperty,
 } from './models';
@@ -23,7 +35,9 @@ import { Subject, takeUntil, tap } from 'rxjs';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormComponent<T extends FormSchema> implements OnInit, OnDestroy {
+export class FormComponent<T extends FormSchema = FormSchema>
+  implements OnInit, OnDestroy
+{
   private _onDestroy$ = new Subject();
   private _fb = inject(FormBuilder);
 
@@ -31,18 +45,27 @@ export class FormComponent<T extends FormSchema> implements OnInit, OnDestroy {
   @Output() updated = new EventEmitter<ExtractType<T['properties']>>();
 
   keys: string[] = [];
-  keyMapping: { [key: string]: FormSchemaArrayProperty | FormSchemaBaseProperty } = {};
+  keyMapping: {
+    [key: string]: FormSchemaArrayProperty | FormSchemaBaseProperty;
+  } = {};
   formGroup: FormGroup | undefined;
 
-  private isObjectProperty(property: FormSchemaProperty): property is FormSchemaObjectProperty {
+  private isObjectProperty(
+    property: FormSchemaProperty,
+  ): property is FormSchemaObjectProperty {
     return property.type === 'object';
   }
 
-  private isArrayProperty(property: FormSchemaProperty): property is FormSchemaArrayProperty {
+  private isArrayProperty(
+    property: FormSchemaProperty,
+  ): property is FormSchemaArrayProperty {
     return property.type === 'array';
   }
 
-  private buildForm(properties: { [p: string]: FormSchemaProperty }, parentKey?: string) {
+  private buildForm(
+    properties: { [p: string]: FormSchemaProperty },
+    parentKey?: string,
+  ) {
     const formGroup: { [p: string]: unknown } = {};
     for (const [key, property] of Object.entries(properties)) {
       const newKey = parentKey ? `${parentKey}.${key}` : key;
@@ -50,7 +73,9 @@ export class FormComponent<T extends FormSchema> implements OnInit, OnDestroy {
       this.keyMapping[newKey] = property;
 
       if (this.isObjectProperty(property)) {
-        formGroup[key] = this._fb.group(this.buildForm(property.properties, newKey));
+        formGroup[key] = this._fb.group(
+          this.buildForm(property.properties, newKey),
+        );
       } else if (this.isArrayProperty(property)) {
         formGroup[key] = this._fb.array([property.default]);
       } else {
@@ -62,14 +87,16 @@ export class FormComponent<T extends FormSchema> implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (!this.schema) throw new Error('Schema is required');
+    if (!this.schema) return;
 
     this.formGroup = this._fb.group(this.buildForm(this.schema.properties));
 
-    this.formGroup.valueChanges.pipe(
-      takeUntil(this._onDestroy$),
-      tap((value) => this.updated.emit(value)),
-    ).subscribe();
+    this.formGroup.valueChanges
+      .pipe(
+        takeUntil(this._onDestroy$),
+        tap((value) => this.updated.emit(value)),
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -89,7 +116,9 @@ export class FormComponent<T extends FormSchema> implements OnInit, OnDestroy {
     return !this.isArrayProperty(this.keyMapping[key]);
   }
 
-  hasProperties(value: FormSchema | FormSchemaProperty | undefined): value is FormSchema | FormSchemaObjectProperty {
+  hasProperties(
+    value: FormSchema | FormSchemaProperty | undefined,
+  ): value is FormSchema | FormSchemaObjectProperty {
     return 'properties' in (value ?? {});
   }
 
@@ -97,7 +126,7 @@ export class FormComponent<T extends FormSchema> implements OnInit, OnDestroy {
     const prop = key === '' ? this.schema : this.keyMapping[key];
     if (!this.hasProperties(prop)) return [];
 
-    return Object.keys(prop.properties).map((k) => key ? `${key}.${k}` : k);
+    return Object.keys(prop.properties).map((k) => (key ? `${key}.${k}` : k));
   }
 
   getArrayControl(key: string): FormArray {
@@ -117,6 +146,8 @@ export class FormComponent<T extends FormSchema> implements OnInit, OnDestroy {
   }
 
   addItem(key: string): void {
-    this.getArrayControl(key).push(this._fb.control(this.keyMapping[key].default));
+    this.getArrayControl(key).push(
+      this._fb.control(this.keyMapping[key].default),
+    );
   }
 }
