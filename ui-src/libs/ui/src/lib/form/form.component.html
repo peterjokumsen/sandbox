@@ -1,1 +1,42 @@
-<p>form works!</p>
+<ng-container *ngIf="formGroup">
+  <form [formGroup]="formGroup">
+    <ng-container *ngTemplateOutlet="groupTemplate; context: { key: '' }"></ng-container>
+  </form>
+</ng-container>
+
+<ng-template #groupTemplate let-key="key">
+  <h3>{{ getLabel(key) }}</h3>
+  <h5 *ngIf="getDescription(key); let description">{{ description }}</h5>
+  <ng-container *ngFor="let newKey of getGroupControls(key)">
+    <ng-container *ngIf="isGroup(newKey)">
+      <ng-container *ngTemplateOutlet="groupTemplate; context: { key: newKey }"></ng-container>
+    </ng-container>
+    <ng-container *ngIf="isArray(newKey)">
+      <ng-container *ngTemplateOutlet="arrayTemplate; context: { key: newKey }"></ng-container>
+    </ng-container>
+    <div class="row">
+      <ng-container *ngIf="isControl(newKey)">
+        <ng-container *ngTemplateOutlet="controlTemplate; context: { key: newKey }"></ng-container>
+      </ng-container>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #arrayTemplate let-key="key">
+  <div [formArrayName]="key">
+    <h4>{{ getLabel(key) }}</h4>
+    <button type="button" (click)="addItem(key)">Add</button>
+    <p *ngIf="getDescription(key); let description">{{ description }}</p>
+    <div *ngFor="let item of getArrayControl(key).controls; let i = index">
+      <input [formControlName]="i" placeholder="{{ getLabel(key) }} {{ i + 1 }}">
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #controlTemplate let-key="key">
+  <div class="form-control">
+    <label>{{ getLabel(key) }}</label>
+    <input [formControlName]="key">
+    <p *ngIf="getDescription(key); let description">{{ description }}</p>
+  </div>
+</ng-template>
