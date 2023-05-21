@@ -36,23 +36,31 @@
 </ng-template>
 
 <ng-template #arrayTemplate let-key="key">
-  <div [formArrayName]="key">
-    <h4>{{ getLabel(key) }}</h4>
-    <button type="button" (click)="addItem(key)">Add</button>
-    <p *ngIf="getDescription(key); let description">{{ description }}</p>
-    <div *ngFor="let item of getArrayControl(key).controls; let i = index">
+  <h4>{{ getLabel(key) }}</h4>
+  <p *ngIf="getDescription(key); let description" class="pb-3">{{ description }}</p>
+  <div *ngFor="let item of getArrayControl(key).controls; let i = index">
+    <div class="input-group mb-3">
+      <ng-container *ngIf="i === 0">
+        <button type="button" class="btn btn-outline-success" (click)="addItem(key)">Add</button>
+      </ng-container>
+
       <input
-        [formControlName]="i"
-        placeholder="{{ getLabel(key) }} {{ i + 1 }}"
+        type="text"
+        class="form-control"
+        [id]="key + '[' + i + ']'"
+        [formControl]="getFormControl(key, i)"
       />
+
+      <ng-container *ngIf="i > 0">
+        <button type="button" class="btn btn-outline-danger" (click)="removeItem(key, i)">Remove</button>
+      </ng-container>
     </div>
   </div>
 </ng-template>
 
 <ng-template #controlTemplate let-key="key">
-  <div class="form-control">
-    <label>{{ getLabel(key) }}</label>
-    <input [formControlName]="key" />
-    <p *ngIf="getDescription(key); let description">{{ description }}</p>
+  <div class="mb-3">
+    <label [for]="key" class="form-label">{{ getLabel(key) }}</label>
+    <input type="text" class="form-control" [id]="key" [formControl]="getFormControl(key)">
   </div>
 </ng-template>

@@ -4,13 +4,16 @@ export interface FormSchemaBaseProperty {
   type: FormSchemaType;
   label: string;
   description?: string;
-  required?: boolean;
   default?: string | number | unknown;
+  disabled?: boolean;
 }
+
+export type FormSchemaMetaData = Omit<FormSchemaProperty, 'label' | 'description'>;
 
 export interface FormSchemaArrayProperty extends FormSchemaBaseProperty {
   type: 'array';
-  items: FormSchemaProperty;
+  items: FormSchemaMetaData;
+  default?: Array<string | FormSchemaArrayProperty>;
 }
 
 export interface FormSchemaObjectProperty extends FormSchemaBaseProperty {
