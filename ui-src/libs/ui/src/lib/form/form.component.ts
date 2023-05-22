@@ -18,7 +18,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import {
-  ExtractType,
   FormSchema,
   FormSchemaArrayProperty,
   FormSchemaBaseProperty,
@@ -37,14 +36,15 @@ import { LoggerService } from '@sandbox/logging';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormComponent<T extends FormSchema = FormSchema>
-  implements OnInit, OnDestroy {
+export class FormComponent
+  implements OnInit, OnDestroy
+{
   private _onDestroy$ = new Subject();
   private _fb = inject(FormBuilder);
   private _logger = inject(LoggerService);
 
-  @Input() schema: T | undefined;
-  @Output() updated = new EventEmitter<ExtractType<T['properties']>>();
+  @Input() schema: FormSchema | undefined | null;
+  @Output() valueChange = new EventEmitter();
 
   keys: string[] = [];
   keyMapping: {
@@ -79,22 +79,29 @@ export class FormComponent<T extends FormSchema = FormSchema>
           this.buildForm(property.properties, newKey),
         );
       } else if (this.isArrayProperty(property)) {
-        const controls: FormControl[] = property.default?.map(
-            (d) =>
-              typeof d === 'string'
-                ? this._fb.control(d)
-                : this._fb.control({
-                  value: d.default,
-                  disabled: d.disabled ?? false,
-                }))
-          ?? [this._fb.control(property.default)];
+        const controls: FormControl[] = property.default?.map((d) =>
+          typeof d === 'string'
+            ? this._fb.control(d)
+            : this._fb.control({
+                value: d.default,
+                disabled: d.disabled ?? false,
+              }),
+        ) ?? [this._fb.control(property.default)];
         formGroup[key] = this._fb.array(controls);
       } else {
-        formGroup[key] = this._fb.control({ value: property.default ?? '', disabled: property.disabled ?? false });
+        formGroup[key] = this._fb.control({
+          value: property.default ?? '',
+          disabled: property.disabled ?? false,
+        });
       }
     }
 
-    this._logger.log('buildForm | Form Group: ', formGroup, 'properties', properties);
+    this._logger.log(
+      'Building form with schema, keys, and formGroup: ',
+      this.schema,
+      this.keys,
+      formGroup,
+    )
     return formGroup;
   }
 
@@ -103,13 +110,13 @@ export class FormComponent<T extends FormSchema = FormSchema>
 
     this.formGroup = this._fb.group(this.buildForm(this.schema.properties));
 
-    this.updated.emit(this.formGroup?.getRawValue());
+    this.valueChange.emit(this.formGroup?.getRawValue());
     this.formGroup.valueChanges
-    .pipe(
-      takeUntil(this._onDestroy$),
-      tap(() => this.updated.emit(this.formGroup?.getRawValue())),
-    )
-    .subscribe();
+      .pipe(
+        takeUntil(this._onDestroy$),
+        tap(() => this.valueChange.emit(this.formGroup?.getRawValue())),
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -130,7 +137,7 @@ export class FormComponent<T extends FormSchema = FormSchema>
   }
 
   hasProperties(
-    value: FormSchema | FormSchemaProperty | undefined,
+    value: FormSchema | FormSchemaProperty | undefined | null,
   ): value is FormSchema | FormSchemaObjectProperty {
     return 'properties' in (value ?? {});
   }
@@ -170,9 +177,7 @@ export class FormComponent<T extends FormSchema = FormSchema>
     const prop = this.keyMapping[key];
     if (!this.isArrayProperty(prop)) return;
 
-    this.getArrayControl(key).push(
-      this._fb.control(prop.items.default),
-    );
+    this.getArrayControl(key).push(this._fb.control(prop.items.default));
   }
 
   removeItem(key: string, index: number): void {
