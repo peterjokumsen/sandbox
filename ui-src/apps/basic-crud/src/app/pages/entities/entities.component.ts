@@ -3,19 +3,34 @@ import { CommonModule } from '@angular/common';
 import { EntitiesApiService } from '@sandbox/entities-api';
 import { BehaviorSubject, catchError, first, map, Observable, of } from 'rxjs';
 import { LoggerService } from '@sandbox/logging';
-import { ButtonListComponent } from '@pj-sandbox/ui';
-import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { ButtonListComponent, FormComponent, FormSchema } from '@pj-sandbox/ui';
+import { AccordionConfig, AccordionModule } from 'ngx-bootstrap/accordion';
+import { SetEntityPropertiesComponent } from '../../components/set-entity-properties/set-entity-properties.component';
 
 type State = 'wait' | 'loading' | 'done';
 
 @Component({
   selector: 'sandbox-entities',
   standalone: true,
-  imports: [CommonModule, ButtonListComponent, AccordionModule],
+  imports: [
+    CommonModule,
+    ButtonListComponent,
+    AccordionModule,
+    SetEntityPropertiesComponent,
+    FormComponent,
+  ],
+  providers: [{ provide: AccordionConfig, useValue: { closeOthers: true } }],
   templateUrl: './entities.component.html',
   styleUrls: ['./entities.component.scss'],
 })
 export class EntitiesComponent {
+  private _schemaSubject = new BehaviorSubject<FormSchema | undefined>({
+    title: 'Entity',
+    properties: {
+      value: { type: 'string', label: 'Value' },
+    },
+  });
+  private _showingInputSubject = new BehaviorSubject<boolean>(false);
   private _api = inject(EntitiesApiService);
   private _logger = inject(LoggerService);
   private _getStateSubject = new BehaviorSubject<State>('wait');
@@ -24,6 +39,10 @@ export class EntitiesComponent {
   private _postSubject = new BehaviorSubject<unknown>(null);
   private _deleteStateSubject = new BehaviorSubject<State>('wait');
   private _deleteSubject = new BehaviorSubject<unknown>(null);
+
+  showingInput$ = this._showingInputSubject.asObservable();
+  entitySchema$ = this._schemaSubject.asObservable();
+  newEntity: { [key: string]: string } = { value: 'hello' };
 
   getState$ = this._getStateSubject.asObservable();
   get$ = this._getSubject.asObservable();
@@ -55,6 +74,12 @@ export class EntitiesComponent {
     return Object.prototype.hasOwnProperty.call(obj, prop);
   }
 
+  updateSchema(schema: FormSchema) {
+    this._schemaSubject.next(undefined);
+    this._logger.log('Updating schema', { schema });
+    this._schemaSubject.next(schema);
+  }
+
   get() {
     this._getStateSubject.next('loading');
     this._getSubject.next(null);
@@ -77,7 +102,7 @@ export class EntitiesComponent {
     this._postStateSubject.next('loading');
     this._postSubject.next(null);
     this._api
-      .createEntity({ value: 'hello' })
+      .createEntity(this.newEntity)
       .pipe(
         first(),
         catchError((error) => {
@@ -114,5 +139,9 @@ export class EntitiesComponent {
         this._deleteStateSubject.next('done');
         this.get();
       });
+  }
+
+  inputOpenChange(isOpen: boolean) {
+    this._showingInputSubject.next(isOpen);
   }
 }

@@ -14,6 +14,11 @@
 </ng-template>
 
 <accordion [isAnimated]="true">
+  <accordion-group heading="Adjust Entity Schema">
+    <sandbox-set-entity-properties
+      (entitySchemaChange)="updateSchema($event)"
+    ></sandbox-set-entity-properties>
+  </accordion-group>
   <accordion-group heading="GET">
     <div class="row api-call">
       <div class="row justify-content-center">
@@ -30,11 +35,16 @@
     </div>
   </accordion-group>
 
-  <accordion-group heading="POST">
+  <accordion-group heading="POST" (isOpenChange)="inputOpenChange($event)">
     <div class="row api-call">
       <div class="row justify-content-center">
-        <div class="col-3 side">
-          <!-- Add form to create body for post -->
+        <div class="col-3 side" *ngIf="showingInput$ | async">
+          <ng-container *ngIf="entitySchema$ | async; let entitySchema">
+            <pj-ui-form
+              [schema]="entitySchema"
+              (valueChange)="newEntity = $event"
+            ></pj-ui-form>
+          </ng-container>
           <button type="button" class="btn btn-primary" (click)="post()">
             Call API
           </button>
