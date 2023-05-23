@@ -11,6 +11,8 @@ import { environment } from './environments/environment';
 import { provideLogging } from '@sandbox/logging';
 import { provideEntitiesApi } from '@sandbox/entities-api';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { importProvidersFrom, isDevMode } from '@angular/core';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -18,6 +20,12 @@ bootstrapApplication(AppComponent, {
     provideLogging(environment.production),
     provideEntitiesApi(),
     provideAnimations(),
+    importProvidersFrom(ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })),
     { provide: TitleStrategy, useExisting: PageTitleService },
   ],
 }).catch((err) => console.error(err));
