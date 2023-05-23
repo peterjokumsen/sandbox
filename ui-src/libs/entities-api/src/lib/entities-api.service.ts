@@ -26,6 +26,15 @@ export class EntitiesApiService {
     );
   }
 
+  updateEntity(id: string, entity: object) {
+    this._logger.log('Updating entity', { id, entity });
+    return this._http.put('/api/entities', entity, { params: { id } }).pipe(
+      tap((updatedEntity) => {
+        this._logger.log('Updated entity', { updatedEntity, id, entity });
+      }),
+    );
+  }
+
   deleteEntity(id: string) {
     this._logger.log('Deleting entity', { id });
     return this._http.delete('/api/entities', { params: { id } }).pipe(
