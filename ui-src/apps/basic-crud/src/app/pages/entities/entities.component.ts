@@ -6,6 +6,7 @@ import { LoggerService } from '@sandbox/logging';
 import { ButtonListComponent, FormComponent, FormSchema } from '@pj-sandbox/ui';
 import { AccordionConfig, AccordionModule } from 'ngx-bootstrap/accordion';
 import { SetEntityPropertiesComponent } from '../../components/set-entity-properties/set-entity-properties.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 type State = 'wait' | 'loading' | 'done';
 
@@ -18,6 +19,7 @@ type State = 'wait' | 'loading' | 'done';
     AccordionModule,
     SetEntityPropertiesComponent,
     FormComponent,
+    BsDropdownModule,
   ],
   providers: [{ provide: AccordionConfig, useValue: { closeOthers: true } }],
   templateUrl: './entities.component.html',
@@ -35,8 +37,8 @@ export class EntitiesComponent {
   private _logger = inject(LoggerService);
   private _getStateSubject = new BehaviorSubject<State>('wait');
   private _getSubject = new BehaviorSubject<unknown>(null);
-  private _postStateSubject = new BehaviorSubject<State>('wait');
-  private _postSubject = new BehaviorSubject<unknown>(null);
+  private _postOrPutStateSubject = new BehaviorSubject<State>('wait');
+  private _postOrPutSubject = new BehaviorSubject<unknown>(null);
   private _deleteStateSubject = new BehaviorSubject<State>('wait');
   private _deleteSubject = new BehaviorSubject<unknown>(null);
 
@@ -47,8 +49,8 @@ export class EntitiesComponent {
   getState$ = this._getStateSubject.asObservable();
   get$ = this._getSubject.asObservable();
 
-  postState$ = this._postStateSubject.asObservable();
-  post$ = this._postSubject.asObservable();
+  postOrPutState$ = this._postOrPutStateSubject.asObservable();
+  postOrPut$ = this._postOrPutSubject.asObservable();
 
   deleteState$ = this._deleteStateSubject.asObservable();
   hasElements$ = this.getState$.pipe(map((state) => state === 'done'));
@@ -70,7 +72,25 @@ export class EntitiesComponent {
     );
   delete$ = this._deleteSubject.asObservable();
 
+  idsToUpdate$: Observable<string[]> = this._getSubject
+    .asObservable()
+    .pipe(
+      map((response) => {
+        if (
+          this.isType<{ resources: Array<object & { id: string }> }>(
+            response,
+            'resources',
+          )
+        ) {
+          return response.resources.map(({ id }) => id);
+        }
+
+        return [];
+      })
+    );
+
   private isType<T>(obj: unknown, prop: keyof T): obj is T {
+    if (!obj) return false;
     return Object.prototype.hasOwnProperty.call(obj, prop);
   }
 
@@ -99,8 +119,8 @@ export class EntitiesComponent {
   }
 
   post() {
-    this._postStateSubject.next('loading');
-    this._postSubject.next(null);
+    this._postOrPutStateSubject.next('loading');
+    this._postOrPutSubject.next(null);
     this._api
       .createEntity(this.newEntity)
       .pipe(
@@ -111,9 +131,29 @@ export class EntitiesComponent {
         }),
       )
       .subscribe((response) => {
-        this._postSubject.next(response);
-        this._postStateSubject.next('done');
+        this._postOrPutSubject.next(response);
+        this._postOrPutStateSubject.next('done');
       });
+  }
+
+  put(id: string) {
+    this._postOrPutStateSubject.next('loading');
+    this._postOrPutSubject.next(null);
+    this._api
+      .updateEntity(id, this.newEntity)
+      .pipe(
+        first(),
+        catchError((error) => {
+          this._logger.log('Failed to put entity', { error });
+          return of({ message: 'Failed to put value', error });
+        }),
+      )
+      .subscribe((response) => {
+        this._postOrPutSubject.next(response);
+        this._postOrPutStateSubject.next('done');
+      });
+
+    return false;
   }
 
   delete(elementId?: string) {
