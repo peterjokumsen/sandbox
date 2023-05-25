@@ -18,10 +18,13 @@
         "assets": [
           "apps/basic-crud/src/favicon.ico",
           "apps/basic-crud/src/assets",
-          "apps/basic-crud/src/staticwebapp.config.json"
+          "apps/basic-crud/src/staticwebapp.config.json",
+          "apps/basic-crud/src/manifest.webmanifest"
         ],
         "styles": ["apps/basic-crud/src/styles.scss"],
-        "scripts": []
+        "scripts": [],
+        "serviceWorker": true,
+        "ngswConfigPath": "apps/basic-crud/ngsw-config.json"
       },
       "configurations": {
         "production": {
