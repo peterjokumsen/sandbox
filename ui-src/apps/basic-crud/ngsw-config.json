@@ -7,12 +7,15 @@
       "urls": [
         "/api/*"
       ],
-      "version": 1,
+      "version": 2,
       "cacheConfig": {
         "maxSize": 100,
-        "maxAge": "1d",
+        "maxAge": "5s",
         "timeout": "5s",
         "strategy": "performance"
+      },
+      "cacheQueryOptions": {
+        "ignoreSearch": true
       }
     }
   ],
