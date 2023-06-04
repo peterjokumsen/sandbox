@@ -2,5 +2,5 @@
   "env": {
     "name": "PROD"
   },
-  "value": "${ENV_VALUE}"
+  "value": "#{ENV_VALUE}"
 }
