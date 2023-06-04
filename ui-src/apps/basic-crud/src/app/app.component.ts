@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Route, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PageTitleService } from './services';
+import { environment } from '../environments/environment';
 
 @Component({
   standalone: true,
@@ -13,6 +14,8 @@ import { PageTitleService } from './services';
 export class AppComponent implements OnInit {
   private _router = inject(Router);
   private _titleService = inject(PageTitleService);
+
+  envValue = environment.value;
 
   title$ = this._titleService.title$;
 
