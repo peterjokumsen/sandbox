@@ -1,9 +1,10 @@
 import {
   ChangeDetectionStrategy,
-  Component,
+  Component, inject,
   ViewEncapsulation,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ConfigApiService } from '@sandbox/api';
 
 @Component({
   selector: 'sandbox-landing',
@@ -15,4 +16,6 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent {
+  private _configApi = inject(ConfigApiService);
+  config$ = this._configApi.getConfig();
 }
