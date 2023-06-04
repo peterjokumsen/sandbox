@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Route, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PageTitleService } from './services';
-import { environment } from '../environments/environment';
+import { AppConfigService } from './app-config';
 
 @Component({
   standalone: true,
@@ -14,9 +14,9 @@ import { environment } from '../environments/environment';
 export class AppComponent implements OnInit {
   private _router = inject(Router);
   private _titleService = inject(PageTitleService);
+  private _config = inject(AppConfigService);
 
-  envValue = environment.value;
-
+  envValue: string | undefined = 'not set';
   title$ = this._titleService.title$;
 
   routes: Array<{ path: string; title: string }> = [];
@@ -28,6 +28,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.envValue = this._config.settings?.value;
+    console.log('AppComponent: ', this.envValue);
     for (const route of this._router.config) {
       if (!this.isProperPage(route)) continue;
 
@@ -36,5 +38,9 @@ export class AppComponent implements OnInit {
         title: route.data.title,
       });
     }
+  }
+
+  resetEnv() {
+    this.envValue = this._config.settings?.value;
   }
 }

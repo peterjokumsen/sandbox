@@ -1,0 +1,6 @@
+{
+  "env": {
+    "name": "PROD"
+  },
+  "value": "${ENV_VALUE}"
+}
