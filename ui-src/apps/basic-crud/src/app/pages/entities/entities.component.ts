@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EntitiesApiService } from '@sandbox/entities-api';
+import { EntitiesApiService } from '@sandbox/api';
 import { BehaviorSubject, catchError, first, map, Observable, of } from 'rxjs';
 import { LoggerService } from '@sandbox/logging';
 import { ButtonListComponent, FormComponent, FormSchema } from '@pj-sandbox/ui';

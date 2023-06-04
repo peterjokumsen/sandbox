@@ -1,24 +1,20 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import {
-  provideRouter,
-  TitleStrategy,
-  withEnabledBlockingInitialNavigation,
-} from '@angular/router';
+import { provideRouter, TitleStrategy, withEnabledBlockingInitialNavigation } from '@angular/router';
 import { appRoutes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { PageTitleService } from './app/services';
 import { environment } from './environments/environment';
 import { provideLogging } from '@sandbox/logging';
-import { provideEntitiesApi } from '@sandbox/entities-api';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { importProvidersFrom, isDevMode } from '@angular/core';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { provideApiServices } from '@sandbox/api';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
     provideLogging(environment.production),
-    provideEntitiesApi(),
+    provideApiServices(),
     provideAnimations(),
     importProvidersFrom(ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
