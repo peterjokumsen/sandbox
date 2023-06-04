@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { EntitiesApiService } from './entities-api.service';
 import { HttpClient } from "@angular/common/http";
 import { TestLoggingModule } from "@sandbox/logging";

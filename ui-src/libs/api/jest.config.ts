@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'entities-api',
+  displayName: 'api',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../coverage/libs/entities-api',
+  coverageDirectory: '../../coverage/libs/api',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

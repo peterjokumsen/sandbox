@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@pj-sandbox/ui": ["libs/ui/src/index.ts"],
-      "@sandbox/entities-api": ["libs/entities-api/src/index.ts"],
+      "@sandbox/api": ["libs/api/src/index.ts"],
       "@sandbox/logging": ["libs/logging/src/index.ts"],
       "@sandbox/testing": ["libs/testing/src/index.ts"]
     }
