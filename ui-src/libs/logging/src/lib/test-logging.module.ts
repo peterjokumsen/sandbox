@@ -7,6 +7,10 @@ const testLogger: LoggerService = {
   log: (...args: unknown[]): void => {
     // ignored
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  trackEvent(event: string, data?: { [p: string]: unknown }): void {
+    // ignored
+  },
 };
 
 export const provideTestLogging = (): Provider[] => {

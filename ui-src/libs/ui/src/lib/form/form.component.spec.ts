@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormComponent } from './form.component';
 import { FormBuilder } from '@angular/forms';
+import { LoggerService } from '@sandbox/logging';
 
 describe('FormComponent', () => {
   let component: FormComponent;
@@ -17,6 +18,7 @@ describe('FormComponent', () => {
       providers: [
         // keep split
         { provide: FormBuilder, useValue: formBuilderSpy },
+        { provide: LoggerService, useValue: {} },
       ],
       imports: [FormComponent],
     }).compileComponents();

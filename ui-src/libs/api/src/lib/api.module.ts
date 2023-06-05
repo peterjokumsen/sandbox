@@ -1,7 +1,7 @@
 import { importProvidersFrom, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { ConfigApiService, EntitiesApiService } from './services';
+import { EntitiesApiService } from './services';
 
 @NgModule({
   imports: [CommonModule, HttpClientModule],
@@ -12,7 +12,6 @@ export class ApiModule {
       ngModule: ApiModule,
       providers: [
         EntitiesApiService,
-        ConfigApiService,
       ],
     };
   }

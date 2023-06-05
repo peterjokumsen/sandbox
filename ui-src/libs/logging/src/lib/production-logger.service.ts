@@ -12,6 +12,6 @@ export class ProductionLoggerService extends LoggerService {
   }
 
   override trackEvent(event: string, data?: { [p: string]: unknown }) {
-    this._analytics.trackEven(event, data);
+    this._analytics.trackEvent(event, data);
   }
 }

@@ -39,7 +39,7 @@ export class AnalyticsLoggerService {
     });
   }
 
-  trackEven(event: string, data?: { [key: string]: unknown }) {
+  trackEvent(event: string, data?: { [key: string]: unknown }) {
     if (!this.appInsights) {
       this._events.push({ name: event, properties: data });
       return;

@@ -1,12 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { ProductionLoggerService } from './production-logger.service';
+import { AnalyticsLoggerService } from './analytics-logger.service';
 
 describe('ProductionLoggerService', () => {
   let service: ProductionLoggerService;
+  let analyticsSpy: jest.Mocked<AnalyticsLoggerService>;
 
   beforeEach(() => {
+    analyticsSpy = {
+      trackEvent: jest.fn(),
+    } as Partial<AnalyticsLoggerService> as jest.Mocked<AnalyticsLoggerService>;
+
     TestBed.configureTestingModule({
-      providers: [ProductionLoggerService],
+      providers: [
+        { provide: AnalyticsLoggerService, useValue: analyticsSpy },
+        ProductionLoggerService,
+      ],
     });
     service = TestBed.inject(ProductionLoggerService);
   });

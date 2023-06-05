@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EntitiesComponent } from './entities.component';
 import { createSpyObj, SpyObj } from '@sandbox/testing';
-import { EntitiesApiService } from '@sandbox/entities-api';
+import { EntitiesApiService } from '@sandbox/api';
 import { TestLoggingModule } from '@sandbox/logging';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
