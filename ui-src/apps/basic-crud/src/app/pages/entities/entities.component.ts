@@ -101,6 +101,7 @@ export class EntitiesComponent {
   }
 
   get() {
+    this._logger.trackEvent('getting entities');
     this._getStateSubject.next('loading');
     this._getSubject.next(null);
     this._api
@@ -113,12 +114,14 @@ export class EntitiesComponent {
         }),
       )
       .subscribe((response) => {
+        this._logger.trackEvent('got entities', { response });
         this._getSubject.next(response);
         this._getStateSubject.next('done');
       });
   }
 
   post() {
+    this._logger.trackEvent('posting entity', { entity: this.newEntity });
     this._postOrPutStateSubject.next('loading');
     this._postOrPutSubject.next(null);
     this._api
@@ -131,12 +134,14 @@ export class EntitiesComponent {
         }),
       )
       .subscribe((response) => {
+        this._logger.trackEvent('posted entity', { response });
         this._postOrPutSubject.next(response);
         this._postOrPutStateSubject.next('done');
       });
   }
 
   put(id: string) {
+    this._logger.trackEvent('putting entity', { id, entity: this.newEntity });
     this._postOrPutStateSubject.next('loading');
     this._postOrPutSubject.next(null);
     this._api
@@ -149,6 +154,7 @@ export class EntitiesComponent {
         }),
       )
       .subscribe((response) => {
+        this._logger.trackEvent('put entity', { response });
         this._postOrPutSubject.next(response);
         this._postOrPutStateSubject.next('done');
       });
@@ -157,7 +163,9 @@ export class EntitiesComponent {
   }
 
   delete(elementId?: string) {
+    this._logger.trackEvent('deleting entity', { elementId });
     if (!elementId) {
+      this._logger.trackEvent('no element to delete received');
       this._deleteStateSubject.next('done');
       this._deleteSubject.next({ message: 'No element to delete received' });
       return;
@@ -175,6 +183,7 @@ export class EntitiesComponent {
         }),
       )
       .subscribe((response) => {
+        this._logger.trackEvent('deleted entity', { response });
         this._deleteSubject.next(response);
         this._deleteStateSubject.next('done');
         this.get();
