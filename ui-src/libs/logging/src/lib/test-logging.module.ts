@@ -3,12 +3,10 @@ import { CommonModule } from '@angular/common';
 import { LoggerService } from './logger.service';
 
 const testLogger: LoggerService = {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  log: (...args: unknown[]): void => {
+  log: (): void => {
     // ignored
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  trackEvent(event: string, data?: { [p: string]: unknown }): void {
+  trackEvent(): void {
     // ignored
   },
 };
