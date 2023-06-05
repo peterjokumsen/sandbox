@@ -7,36 +7,42 @@ import { catchError } from 'rxjs';
   providedIn: 'root',
 })
 export class AnalyticsLoggerService {
-  private _events: Array<{ name: string; properties?: { [key: string]: unknown } }> = [];
+  private _events: Array<{
+    name: string;
+    properties?: { [key: string]: unknown };
+  }> = [];
   appInsights?: ApplicationInsights;
 
   constructor(http: HttpClient) {
-    http.get<{ insightsConnection: string }>('/api/config').pipe(
-      catchError(() => {
-        return [{ insightsConnection: '' }];
-      }),
-    ).subscribe((config) => {
-      if (!config.insightsConnection) {
-        return;
-      }
-
-      this.appInsights = new ApplicationInsights({
-        config: {
-          connectionString: config.insightsConnection,
-          enableAutoRouteTracking: true,
-          enableCorsCorrelation: true,
-        },
-      });
-
-      this.appInsights.loadAppInsights();
-
-      while (this._events.length !== 0) {
-        const event = this._events.pop();
-        if (event) {
-          this.appInsights.trackEvent(event);
+    http
+      .get<{ insightsConnection: string }>('/api/config')
+      .pipe(
+        catchError(() => {
+          return [{ insightsConnection: '' }];
+        }),
+      )
+      .subscribe((config) => {
+        if (!config.insightsConnection) {
+          return;
         }
-      }
-    });
+
+        this.appInsights = new ApplicationInsights({
+          config: {
+            connectionString: config.insightsConnection,
+            enableAutoRouteTracking: true,
+            enableCorsCorrelation: true,
+          },
+        });
+
+        this.appInsights.loadAppInsights();
+
+        while (this._events.length !== 0) {
+          const event = this._events.pop();
+          if (event) {
+            this.appInsights.trackEvent(event);
+          }
+        }
+      });
   }
 
   trackEvent(event: string, data?: { [key: string]: unknown }) {

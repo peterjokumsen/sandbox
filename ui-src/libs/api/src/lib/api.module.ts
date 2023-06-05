@@ -10,9 +10,7 @@ export class ApiModule {
   static forRoot() {
     return {
       ngModule: ApiModule,
-      providers: [
-        EntitiesApiService,
-      ],
+      providers: [EntitiesApiService],
     };
   }
 }

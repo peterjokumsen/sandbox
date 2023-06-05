@@ -72,22 +72,20 @@ export class EntitiesComponent {
     );
   delete$ = this._deleteSubject.asObservable();
 
-  idsToUpdate$: Observable<string[]> = this._getSubject
-    .asObservable()
-    .pipe(
-      map((response) => {
-        if (
-          this.isType<{ resources: Array<object & { id: string }> }>(
-            response,
-            'resources',
-          )
-        ) {
-          return response.resources.map(({ id }) => id);
-        }
+  idsToUpdate$: Observable<string[]> = this._getSubject.asObservable().pipe(
+    map((response) => {
+      if (
+        this.isType<{ resources: Array<object & { id: string }> }>(
+          response,
+          'resources',
+        )
+      ) {
+        return response.resources.map(({ id }) => id);
+      }
 
-        return [];
-      })
-    );
+      return [];
+    }),
+  );
 
   private isType<T>(obj: unknown, prop: keyof T): obj is T {
     if (!obj) return false;

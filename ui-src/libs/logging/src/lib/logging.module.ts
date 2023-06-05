@@ -5,7 +5,8 @@ import { ProductionLoggerService } from './production-logger.service';
 import { DebugLoggerService } from './debug-logger.service';
 import { HttpClientModule } from '@angular/common/http';
 
-export const provideLogging = (production = true) => importProvidersFrom(HttpClientModule, LoggingModule.forRoot(production));
+export const provideLogging = (production = true) =>
+  importProvidersFrom(HttpClientModule, LoggingModule.forRoot(production));
 
 @NgModule({
   imports: [CommonModule, HttpClientModule],
@@ -18,7 +19,9 @@ export class LoggingModule {
         production ? ProductionLoggerService : DebugLoggerService,
         {
           provide: LoggerService,
-          useExisting: production ? ProductionLoggerService : DebugLoggerService,
+          useExisting: production
+            ? ProductionLoggerService
+            : DebugLoggerService,
         },
       ],
     };

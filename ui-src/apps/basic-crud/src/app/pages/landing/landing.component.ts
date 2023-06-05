@@ -14,5 +14,4 @@ import { CommonModule } from '@angular/common';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LandingComponent {
-}
+export class LandingComponent {}
