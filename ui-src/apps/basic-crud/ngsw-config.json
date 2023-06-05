@@ -4,7 +4,7 @@
   "dataGroups": [
     {
       "name": "api-config",
-      "version": 1,
+      "version": 3,
       "urls": ["api/config"],
       "cacheConfig": {
         "strategy": "performance",
