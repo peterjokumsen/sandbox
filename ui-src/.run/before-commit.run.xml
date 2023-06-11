@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="before-commit" type="CompoundRunConfigurationType">
-    <toRun name="affected:all-targets" type="js.build_tools.npm" />
-    <toRun name="format" type="js.build_tools.npm" />
-    <method v="2" />
-  </configuration>
-</component>

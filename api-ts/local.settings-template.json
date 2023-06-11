@@ -1,9 +1,0 @@
-{
-  "IsEncrypted": false,
-  "Values": {
-    "FUNCTIONS_WORKER_RUNTIME": "node",
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "COSMOS_DB_ENDPOINT": "{your cosmos db endpoint}",
-    "COSMOS_DB_KEY": "{your cosmos db key}"
-  }
-}

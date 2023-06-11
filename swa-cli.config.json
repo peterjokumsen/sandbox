@@ -2,8 +2,7 @@
   "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
   "configurations": {
     "sandbox": {
-      "appLocation": "ui-src\\dist\\apps\\basic-crud",
-      "apiLocation": "api-ts",
+      "appLocation": "dist\\apps\\sandbox-host",
       "outputLocation": ".",
       "apiBuildCommand": "npm run build"
     }

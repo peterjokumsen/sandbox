@@ -1,6 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="start swa" type="PowerShellRunType" factoryName="PowerShell" scriptUrl="../start-swa.ps1" workingDirectory="$ProjectFileDir$" executablePath="pwsh.exe">
-    <envs />
-    <method v="2" />
-  </configuration>
-</component>
